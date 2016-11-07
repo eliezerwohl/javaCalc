@@ -35,8 +35,7 @@
         android:textStyle="normal|bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/newNumber"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/newNumber"
-        tools:layout_editor_absoluteY="50dp" />
+        app:layout_constraintRight_toLeftOf="@+id/newNumber" />
 
     <EditText
         android:id="@+id/newNumber"
@@ -223,5 +222,14 @@
         android:text="="
         app:layout_constraintBaseline_toBaselineOf="@+id/buttonDot"
         app:layout_constraintLeft_toRightOf="@+id/buttonDot" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        tools:layout_editor_absoluteY="366dp"
+        tools:layout_editor_absoluteX="85dp"
+        android:id="@+id/editText" />
 
 </android.support.constraint.ConstraintLayout>
