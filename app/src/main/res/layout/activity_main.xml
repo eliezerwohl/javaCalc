@@ -232,4 +232,12 @@
         tools:layout_editor_absoluteX="85dp"
         android:id="@+id/editText" />
 
+    <Button
+        android:text="neg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteY="431dp"
+        tools:layout_editor_absoluteX="229dp"
+        android:id="@+id/buttonNeg" />
+
 </android.support.constraint.ConstraintLayout>

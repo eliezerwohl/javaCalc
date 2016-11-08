@@ -2,6 +2,7 @@ package com.example.eliezerwohl.calculator;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,8 +18,29 @@ public class MainActivity extends AppCompatActivity {
 
     //var to hold the operands and type of calculations
     private Double operand1 = null;
-    private Double operand2 = null;
     private String pendingOperation = "=";
+    private static final String STATE_PENDING_OPERATION ="Pending Operation";
+    private static final String STATE_OPERAND1 = "Operand1";
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+
+        outState.putString(STATE_PENDING_OPERATION, pendingOperation);
+        if (operand1 != null){
+            outState.putDouble(STATE_OPERAND1, operand1);
+        }
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        pendingOperation =savedInstanceState.getString(STATE_PENDING_OPERATION);
+        operand1 = savedInstanceState.getDouble(STATE_OPERAND1);
+        displayOperation.setText(pendingOperation);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +60,34 @@ public class MainActivity extends AppCompatActivity {
         Button button8 = (Button)findViewById(R.id.button8);
         Button button9 = (Button)findViewById(R.id.button9);
 
+
         Button buttonDot = (Button)findViewById(R.id.buttonDot);
         Button buttonEquals = (Button)findViewById(R.id.buttonEquals);
         Button buttonDivide = (Button)findViewById(R.id.buttonDivide);
         Button buttonMultiply = (Button)findViewById(R.id.buttonMultiply);
         Button buttonMinus = (Button)findViewById(R.id.buttonMinus);
         Button buttonPlus = (Button)findViewById(R.id.buttonPlus);
+        Button buttonNeg = (Button)findViewById(R.id.buttonNeg);
+
+        buttonNeg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String value = newNumber.getText().toString();
+                if (value.length() == 0){
+                    newNumber.setText("-");
+                }else{
+                    try {
+                        Double doubleValue = Double.valueOf(value);
+                        doubleValue*=-1;
+                        newNumber.setText(doubleValue.toString());
+                    }catch (NumberFormatException e){
+                        newNumber.setText("");
+                    }
+                }
+
+            }
+        });
+
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,8 +113,11 @@ public class MainActivity extends AppCompatActivity {
                 Button b = (Button) view;
                 String op = b.getText().toString();
                 String value = newNumber.getText().toString();
-                if (value.length() !=0){
-                    preformOperation(value, op);
+                try {
+                Double doubleValue = Double.valueOf(value);
+                    preformOperation(doubleValue, op);
+                    }catch (NumberFormatException e){
+                    newNumber.setText("");
                 }
                 pendingOperation = op;
                 displayOperation.setText(pendingOperation);
@@ -82,37 +129,36 @@ public class MainActivity extends AppCompatActivity {
         buttonMinus.setOnClickListener(opListner);
         buttonPlus.setOnClickListener(opListner);
     }
-    private void preformOperation(String value, String operation){
+    private void preformOperation(Double value, String operation){
 //        displayOperation.setText(operation);
         if (operand1 == null){
-            operand1 = Double.valueOf(value);
+            operand1 = value;
 
         }
         else {
-            operand2 = Double.valueOf(value);
             if (pendingOperation.equals("=")){
                 pendingOperation = operation;
             }
             switch (pendingOperation){
                 case "=":
-                    operand1 = operand2;
+                    operand1 = value;
                     break;
                 case "/":
-                    if (operand2 == 0){
+                    if (value == 0){
                         //dividing by zero crashes the computer
                         operand1 = 0.0;
                     }else{
-                        operand1 /= operand2;
+                        operand1 /= value;
                     }
                     break;
                 case "*":
-                    operand1*=operand2;
+                    operand1*=value;
                     break;
                 case "-":
-                    operand1-=operand2;
+                    operand1-=value;
                     break;
                 case "+":
-                    operand1+=operand2;
+                    operand1+=value;
                     break;
 
             }
